@@ -257,6 +257,7 @@ function loadReservations() {
 
             renderReservations();
             renderCalendar();
+            renderStatistics();
         }, error => {
             console.error('Error loading reservations:', error);
             reservationsList.innerHTML = '<p class="no-reservations">Error loading reservations. Please check Firebase configuration.</p>';
@@ -309,6 +310,131 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ============================================
+// STATISTICS
+// ============================================
+const statisticsContent = document.getElementById('statisticsContent');
+const statsAllTimeBtn = document.getElementById('statsAllTime');
+const statsPerYearBtn = document.getElementById('statsPerYear');
+let currentStatsView = 'allTime';
+
+function calculateStatistics() {
+    const stats = {
+        allTime: {},
+        byYear: {}
+    };
+
+    reservations.forEach(res => {
+        const name = res.guestName;
+        const year = res.startDate.substring(0, 4);
+
+        // All time stats
+        if (!stats.allTime[name]) {
+            stats.allTime[name] = 0;
+        }
+        stats.allTime[name]++;
+
+        // Per year stats
+        if (!stats.byYear[year]) {
+            stats.byYear[year] = {};
+        }
+        if (!stats.byYear[year][name]) {
+            stats.byYear[year][name] = 0;
+        }
+        stats.byYear[year][name]++;
+    });
+
+    return stats;
+}
+
+function renderStatistics() {
+    const stats = calculateStatistics();
+
+    if (reservations.length === 0) {
+        statisticsContent.innerHTML = '<p class="stats-empty">No reservations yet</p>';
+        return;
+    }
+
+    if (currentStatsView === 'allTime') {
+        renderAllTimeStats(stats.allTime);
+    } else {
+        renderPerYearStats(stats.byYear);
+    }
+}
+
+function renderAllTimeStats(allTimeStats) {
+    const entries = Object.entries(allTimeStats).sort((a, b) => b[1] - a[1]);
+    const maxCount = Math.max(...entries.map(e => e[1]));
+
+    let html = '<div class="stats-year-group"><h3>All Time</h3><div class="stats-bars">';
+
+    entries.forEach(([name, count]) => {
+        const percentage = (count / maxCount) * 100;
+        html += `
+            <div class="stats-row">
+                <span class="stats-name">${escapeHtml(name)}</span>
+                <div class="stats-bar-container">
+                    <div class="stats-bar" style="width: ${percentage}%"></div>
+                </div>
+                <span class="stats-count">${count}</span>
+            </div>
+        `;
+    });
+
+    html += '</div></div>';
+    statisticsContent.innerHTML = html;
+}
+
+function renderPerYearStats(byYearStats) {
+    const years = Object.keys(byYearStats).sort((a, b) => b - a);
+
+    if (years.length === 0) {
+        statisticsContent.innerHTML = '<p class="stats-empty">No reservations yet</p>';
+        return;
+    }
+
+    let html = '';
+
+    years.forEach(year => {
+        const yearStats = byYearStats[year];
+        const entries = Object.entries(yearStats).sort((a, b) => b[1] - a[1]);
+        const maxCount = Math.max(...entries.map(e => e[1]));
+
+        html += `<div class="stats-year-group"><h3>${year}</h3><div class="stats-bars">`;
+
+        entries.forEach(([name, count]) => {
+            const percentage = (count / maxCount) * 100;
+            html += `
+                <div class="stats-row">
+                    <span class="stats-name">${escapeHtml(name)}</span>
+                    <div class="stats-bar-container">
+                        <div class="stats-bar" style="width: ${percentage}%"></div>
+                    </div>
+                    <span class="stats-count">${count}</span>
+                </div>
+            `;
+        });
+
+        html += '</div></div>';
+    });
+
+    statisticsContent.innerHTML = html;
+}
+
+statsAllTimeBtn.addEventListener('click', () => {
+    currentStatsView = 'allTime';
+    statsAllTimeBtn.classList.add('active');
+    statsPerYearBtn.classList.remove('active');
+    renderStatistics();
+});
+
+statsPerYearBtn.addEventListener('click', () => {
+    currentStatsView = 'perYear';
+    statsPerYearBtn.classList.add('active');
+    statsAllTimeBtn.classList.remove('active');
+    renderStatistics();
+});
 
 // ============================================
 // PASSWORD & AUTH
