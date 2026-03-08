@@ -4,12 +4,12 @@
 // See SETUP.md for instructions
 // ============================================
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyATfkF9K6k2IBSiL93wFXKCJs5WEpOQm_s",
+    authDomain: "morlongo-reservation.firebaseapp.com",
+    projectId: "morlongo-reservation",
+    storageBucket: "morlongo-reservation.firebasestorage.app",
+    messagingSenderId: "858702672609",
+    appId: "1:858702672609:web:28fced8ab306780977bda0"
 };
 
 // Initialize Firebase
