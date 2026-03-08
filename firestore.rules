@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Config collection - stores the shared password hash
+    match /config/auth {
+      // Anyone can read (needed for password verification)
+      allow read: if true;
+      // Only admins can write (you'll set this up manually in Firebase console)
+      allow write: if false;
+    }
+
+    // Reservations collection
+    match /reservations/{reservationId} {
+      // Anyone can read reservations
+      allow read: if true;
+
+      // Writing requires the correct password
+      allow create, update: if request.resource.data.password == get(/databases/$(database)/documents/config/auth).data.password;
+
+      // For delete, we check the password in the document being deleted
+      // (document must be updated with password before deletion)
+      allow delete: if resource.data.password == get(/databases/$(database)/documents/config/auth).data.password;
+    }
+  }
+}

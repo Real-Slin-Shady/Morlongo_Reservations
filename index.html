@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morlongo Vacation Home - Reservations</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Morlongo</h1>
+            <p class="subtitle">Vacation Home Reservations</p>
+        </header>
+
+        <main>
+            <!-- Calendar Section -->
+            <section class="calendar-section">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="nav-btn">&larr;</button>
+                    <h2 id="currentMonth">January 2025</h2>
+                    <button id="nextMonth" class="nav-btn">&rarr;</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="day-header">Sun</div>
+                    <div class="day-header">Mon</div>
+                    <div class="day-header">Tue</div>
+                    <div class="day-header">Wed</div>
+                    <div class="day-header">Thu</div>
+                    <div class="day-header">Fri</div>
+                    <div class="day-header">Sat</div>
+                    <div id="calendarDays"></div>
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="dot confirmed"></span> Confirmed</span>
+                    <span class="legend-item"><span class="dot tentative"></span> Tentative</span>
+                </div>
+            </section>
+
+            <!-- Reservations List -->
+            <section class="reservations-section">
+                <h2>Upcoming Reservations</h2>
+                <div id="reservationsList" class="reservations-list">
+                    <p class="loading">Loading reservations...</p>
+                </div>
+            </section>
+
+            <!-- Add Reservation Button -->
+            <button id="addReservationBtn" class="add-btn">+ New Reservation</button>
+        </main>
+
+        <!-- Password Modal -->
+        <div id="passwordModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Enter Password</h2>
+                <p>Please enter the password to make a reservation.</p>
+                <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+                <p id="passwordError" class="error"></p>
+                <button id="submitPassword" class="btn primary">Continue</button>
+            </div>
+        </div>
+
+        <!-- Reservation Form Modal -->
+        <div id="reservationModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">New Reservation</h2>
+                <form id="reservationForm">
+                    <div class="form-group">
+                        <label for="guestName">Name</label>
+                        <input type="text" id="guestName" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" required>
+                            <option value="tentative">Tentative</option>
+                            <option value="confirmed">Confirmed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notes (optional)</label>
+                        <textarea id="notes" rows="3" placeholder="Any additional notes..."></textarea>
+                    </div>
+                    <p id="formError" class="error"></p>
+                    <div class="form-buttons">
+                        <button type="button" id="cancelBtn" class="btn secondary">Cancel</button>
+                        <button type="submit" class="btn primary">Save Reservation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content small">
+                <h2>Delete Reservation?</h2>
+                <p>Are you sure you want to delete this reservation?</p>
+                <div class="form-buttons">
+                    <button id="cancelDelete" class="btn secondary">Cancel</button>
+                    <button id="confirmDelete" class="btn danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
